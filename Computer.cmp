@@ -1,0 +1,11 @@
+// Team 18 - Expected output for Computer.tst
+// Format: RAM[0] | RAM[3] | RAM[16] | RAM[100] | RAM[101]
+// 
+// RAM[0]   = 48  (final result: field value 42 + static instanceCount 6)
+// RAM[3]   = 100 (THIS pointer — base address of object fields)
+// RAM[16]  = 6   (static 0: instanceCount initialized to 5, then incremented to 6)
+// RAM[100] = 42  (this 0: field 'value' = 42)
+// RAM[101] = 1   (this 1: field 'id' = 1)
+
+|RAM[0] |RAM[3] |RAM[16]|RAM[100]|RAM[101]|
+|    48 |   100 |     6 |     42 |      1 |

@@ -1,0 +1,58 @@
+// Team 18 - Computer Architecture
+// Connects CPU, ROM (with our program), and RAM
+// This is the top-level chip that executes our static/field access program.
+//
+// Architecture:
+//
+//   ┌─────────────────────────────────────────────────────────┐
+//   │                     COMPUTER                            │
+//   │                                                         │
+//   │  ┌──────────┐    instruction     ┌──────────────────┐  │
+//   │  │          │ ◄──────────────────│    ROM32K        │  │
+//   │  │   CPU    │                    │  (our .hack)     │  │
+//   │  │          │ ──── pc ──────────►│  address[15]     │  │
+//   │  │          │                    └──────────────────┘  │
+//   │  │          │                                          │
+//   │  │          │ ──── addressM ───►┐                      │
+//   │  │          │ ◄─── inM ─────────┤  RAM16K              │
+//   │  │          │ ──── outM ───────►│  (data memory)       │
+//   │  │          │ ──── writeM ─────►│                      │
+//   │  └──────────┘                   └──────────────────────┘
+//   │                                                         │
+//   │  reset input: resets PC to 0 (restart program)         │
+//   └─────────────────────────────────────────────────────────┘
+//
+// KEY MEMORY ADDRESSES USED BY OUR PROGRAM:
+//   RAM[0]   = R0 / SP  → stores final result (42 + 6 = 48)
+//   RAM[3]   = THIS     → pointer to field variable base (= 100)
+//   RAM[16]  = static 0 → instanceCount (= 6 after increment)
+//   RAM[100] = this 0   → field 'value' (= 42)
+//   RAM[101] = this 1   → field 'id'    (= 1)
+
+CHIP Computer {
+    IN reset;
+
+    PARTS:
+    // ROM: stores our program instructions (load team18_test.hack)
+    ROM32K(address=pc, out=instruction);
+
+    // CPU: executes instructions, manages A/D registers and PC
+    CPU(
+        inM=memOut,           // data read from RAM
+        instruction=instruction,
+        reset=reset,
+        outM=cpuOut,          // data to write to RAM
+        writeM=writeM,        // write enable signal
+        addressM=addressM,    // RAM address to read/write
+        pc=pc                 // next instruction address (→ ROM)
+    );
+
+    // RAM: data memory (16K words)
+    // addressM[0..14] selects which RAM register to access
+    RAM16K(
+        in=cpuOut,
+        load=writeM,
+        address=addressM[0..13],
+        out=memOut
+    );
+}

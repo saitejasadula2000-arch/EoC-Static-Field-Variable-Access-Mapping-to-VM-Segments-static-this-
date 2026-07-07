@@ -1,0 +1,97 @@
+// ============================================================
+// Team 18 - Expected VM Code for Counter.jack
+// Demonstrates static → 'static' segment, field → 'this' segment
+// ============================================================
+
+// ---- Counter.new(initialValue) ----
+// static int instanceCount → static 0
+// field  int value         → this 0
+// field  int id            → this 1
+
+function Counter.new 0
+    push constant 2          // allocate 2 fields (value, id)
+    call Memory.alloc 1
+    pop pointer 0            // set THIS = base address of new object
+
+    // instanceCount = instanceCount + 1  (static segment)
+    push static 0
+    push constant 1
+    add
+    pop static 0
+
+    // id = instanceCount  (this segment, field index 1)
+    push static 0
+    pop this 1
+
+    // value = initialValue  (this segment, field index 0)
+    push argument 0
+    pop this 0
+
+    push pointer 0
+    return
+
+// ---- Counter.increment() ----
+function Counter.increment 0
+    push argument 0
+    pop pointer 0            // restore THIS pointer for method
+
+    // value = value + 1
+    push this 0
+    push constant 1
+    add
+    pop this 0
+
+    push constant 0
+    return
+
+// ---- Counter.decrement() ----
+function Counter.decrement 0
+    push argument 0
+    pop pointer 0
+
+    // value = value - 1
+    push this 0
+    push constant 1
+    sub
+    pop this 0
+
+    push constant 0
+    return
+
+// ---- Counter.getValue() ----
+function Counter.getValue 0
+    push argument 0
+    pop pointer 0
+
+    push this 0              // return field 'value' (this 0)
+    return
+
+// ---- Counter.getId() ----
+function Counter.getId 0
+    push argument 0
+    pop pointer 0
+
+    push this 1              // return field 'id' (this 1)
+    return
+
+// ---- Counter.getInstanceCount() [function, not method] ----
+function Counter.getInstanceCount 0
+    push static 0            // return static 'instanceCount'
+    return
+
+// ---- Counter.resetInstanceCount() [function, not method] ----
+function Counter.resetInstanceCount 0
+    push constant 0
+    pop static 0             // reset static 'instanceCount' to 0
+    push constant 0
+    return
+
+// ---- Counter.dispose() ----
+function Counter.dispose 0
+    push argument 0
+    pop pointer 0
+    push pointer 0
+    call Memory.deAlloc 1
+    pop temp 0
+    push constant 0
+    return

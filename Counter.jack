@@ -1,0 +1,64 @@
+/**
+ * Team 18 - Static and Field Variable Access Mapping to VM Segments
+ * 
+ * This class demonstrates:
+ *   - 'static' variables → mapped to VM 'static' segment
+ *   - 'field' variables  → mapped to VM 'this' segment
+ *
+ * static int instanceCount  → static 0  (shared across all Counter objects)
+ * field  int value          → this 0    (unique per object instance)
+ * field  int id             → this 1    (unique per object instance)
+ */
+class Counter {
+
+    static int instanceCount;   // VM segment: static 0
+    field  int value;           // VM segment: this 0
+    field  int id;              // VM segment: this 1
+
+    /** Constructor: allocates memory for a Counter object */
+    constructor Counter new(int initialValue) {
+        let instanceCount = instanceCount + 1;   // static 0 = static 0 + 1
+        let id = instanceCount;                  // this 1  = static 0
+        let value = initialValue;                // this 0  = argument 0
+        return this;
+    }
+
+    /** Increments the field variable 'value' by 1 */
+    method void increment() {
+        let value = value + 1;   // this 0 = this 0 + 1
+        return;
+    }
+
+    /** Decrements the field variable 'value' by 1 */
+    method void decrement() {
+        let value = value - 1;   // this 0 = this 0 - 1
+        return;
+    }
+
+    /** Returns the current value (field → this segment) */
+    method int getValue() {
+        return value;            // return this 0
+    }
+
+    /** Returns this counter's id (field → this segment) */
+    method int getId() {
+        return id;               // return this 1
+    }
+
+    /** Returns the total number of Counter instances (static → static segment) */
+    function int getInstanceCount() {
+        return instanceCount;    // return static 0
+    }
+
+    /** Resets the static counter (affects ALL instances) */
+    function void resetInstanceCount() {
+        let instanceCount = 0;   // static 0 = 0
+        return;
+    }
+
+    /** Disposes this Counter object */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+}

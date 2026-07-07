@@ -1,0 +1,57 @@
+/**
+ * Team 18 - Main Test Program
+ * Tests static and field variable mapping in the Counter class.
+ *
+ * Expected output on VM Emulator screen:
+ *   Counter 1 Value: 5
+ *   Counter 2 Value: 10
+ *   After increment -> Counter 1 Value: 6
+ *   Total Instances: 2
+ *   After reset    -> Total Instances: 0
+ */
+class Main {
+
+    function void main() {
+        var Counter c1;
+        var Counter c2;
+        var int v;
+
+        // Create two Counter objects
+        // Constructor maps: field 'value' → this 0, field 'id' → this 1
+        //                   static 'instanceCount' → static 0
+        let c1 = Counter.new(5);
+        let c2 = Counter.new(10);
+
+        // Display values using field (this segment) access
+        do Output.printString("Counter 1 Value: ");
+        do Output.printInt(c1.getValue());
+        do Output.println();
+
+        do Output.printString("Counter 2 Value: ");
+        do Output.printInt(c2.getValue());
+        do Output.println();
+
+        // Increment c1 (modifies this 0 of c1 only)
+        do c1.increment();
+        do Output.printString("After increment -> Counter 1 Value: ");
+        do Output.printInt(c1.getValue());
+        do Output.println();
+
+        // Access static variable (static 0, shared across all instances)
+        do Output.printString("Total Instances: ");
+        do Output.printInt(Counter.getInstanceCount());
+        do Output.println();
+
+        // Reset static variable
+        do Counter.resetInstanceCount();
+        do Output.printString("After reset -> Total Instances: ");
+        do Output.printInt(Counter.getInstanceCount());
+        do Output.println();
+
+        // Clean up
+        do c1.dispose();
+        do c2.dispose();
+
+        return;
+    }
+}

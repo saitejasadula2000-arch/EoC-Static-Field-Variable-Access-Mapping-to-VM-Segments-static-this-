@@ -1,0 +1,58 @@
+function Counter.new 0
+push constant 2
+call Memory.alloc 1
+pop pointer 0
+push static 0
+push constant 1
+add
+pop static 0
+push static 0
+pop this 1
+push argument 0
+pop this 0
+push pointer 0
+return
+function Counter.increment 0
+push argument 0
+pop pointer 0
+push this 0
+push constant 1
+add
+pop this 0
+push constant 0
+return
+function Counter.decrement 0
+push argument 0
+pop pointer 0
+push this 0
+push constant 1
+sub
+pop this 0
+push constant 0
+return
+function Counter.getValue 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Counter.getId 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Counter.getInstanceCount 0
+push static 0
+return
+function Counter.resetInstanceCount 0
+push constant 0
+pop static 0
+push constant 0
+return
+function Counter.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
