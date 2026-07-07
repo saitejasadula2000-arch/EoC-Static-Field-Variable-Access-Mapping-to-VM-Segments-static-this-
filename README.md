@@ -162,7 +162,7 @@ let id = 1           push constant 1   @1 + D=A
 ---
 
 ## Team 18 Members
-*(Add your names here)*
+*S Sai Teja (Team Lead), K Rathan, N Dileep Reddy, S Veekshith Reddy*
 
 ---
 *23AID113 Elements of Computing - II | End Semester Project*
